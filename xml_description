@@ -1,0 +1,275 @@
+Описание структуры xml-файлов для Заполнятора
+
+Базовая структура xml содержит блок persons и ссылку на пространство имен xmlns:xsi и схему xsi.
+<?xml version="1.0"?>
+<persons xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="declarationXMLtemplate_Schema _transport_merged.xsd">
+</persons>
+
+Каждый человек описывается блоком person. Каждой персоне присваивается сквозной идентификатор. 
+В случае, если нужно указать, что значение для данного поля отсутствует, в него записывается атрибут xsi:nil="true"/> (далее по тексту будет обозначено как null).
+Описания для чиновника и его родственников различаются: у чиновника в поле name записано имя, у родственника вместо имени – null. У чиновника в полях relativeOf и relationType записано null, у родственника – соответственно id чиновника и тип родства (1 - супруг, 2 – супруга, 3 – ребенок).  У чиновника в поле position – наименование должности, у родственника – null.
+Далее идет блок realties – описание объектов собственности, принадлежащей человеку. Поле realtyType (тип пользования) может иметь 2 значения: 1 = «Объект недвижимости, находящийся в собственности» (обычно это левая колонка в декларации), 2 = «Объект недвижимости, находящийся в пользовании» (обычно это правая колонка в декларации). Поле objectType – это вид объекта недвижимости. Плагин понимает 6 типов: 7 = «квартира», 9 = «земельный участок»,  10 = «жилой дом», 16 = «дача», «дом дачный» и т.п., 17 = «гараж», «машиноместо», «машино-место» и т.п., 8 = «иное». ownershipType – тип собственности. Может принимать 3 значения: 1 = «индивидуальная», 2 = «совместная», 3 = «долевая» (тогда в поле ownershipPart указывается размер доли – см. пример из таблицы 2. Во всех остальных случаях в этом поле стоит null). square – площадь объекта, country – страна местонахождения объекта. 1 - Беларусь, 2 - Грузия, 3 - Казахстан, 4 - Литва, 5 - Португалия, Россия - 6, 7 - США, 8 - Украина.
+Далее следует блок описания транспортных средств transports (таблица 3). Для каждого транспортного средства создается поле transport и внутри него – вложенное поле transportName. Важно: помимо автомобилей (обычно начинаются с ключевого слова «а/м») могут встречаться экзотические средства передвижения – лодки, катера, снегоходы и т.п. (см. таблицу 3). Если транспортных средств у человека нет, в этом блоке пишется null (см. таблицу 1, колонку «родственник чиновника»).
+Последние три поля – сведения о доходах. В поле income указан доход человека, который обычно выглядит как цифра, но может содержать дополнительно и текст (см. таблицу 4). Есть еще два поля, (предположительно) комментарий к сведениям о доходам и сведения об источниках доходов. Примеров для них найти не удалось, поэтому в поле пишется null.
+Целиком запись о чиновнике из декларации можно посмотреть в таблице 5.
+XML необходимо дробить на файлы, в каждом из которых записи о не более чем 20 должностных лицах, или на смысловые блоки, представленные в исходных файлах (департаменты, отделы и пр.).
+
+Описание персоны «чиновник»
+<person>
+    <id>1</id>
+    <name>Корниенко  Г.А.</name>
+    <relativeOf  xsi:nil="true"/>
+    <relationType  xsi:nil="true"/>
+    <position>директор  ФСИН  России</position>
+    <realties>
+      <realty>
+        <realtyType>1</realtyType>
+        <objectType>7</objectType>
+        <ownershipType>1</ownershipType>
+        <ownershipPart  xsi:nil="true"/>
+        <square>77.8</square>
+        <country>6</country>
+      </realty>
+      <realty>
+        <realtyType>1</realtyType>
+        <objectType>7</objectType>
+        <ownershipType>1</ownershipType>
+        <ownershipPart  xsi:nil="true"/>
+        <square>94.2</square>
+        <country>6</country>
+      </realty>
+      <realty>
+        <realtyType>1</realtyType>
+        <objectType>17</objectType>
+        <ownershipType>3</ownershipType>
+        <ownershipPart>0.00401606</ownershipPart>
+        <square>16.5</square>
+        <country>6</country>
+      </realty>
+    </realties>
+    <transports  xsi:nil="true"/>
+    <income>3189140.35</income>
+    <incomeComment  xsi:nil="true"/>
+    <incomeSource  xsi:nil="true"/>
+</person>
+
+Описание персоны «родственник чиновника»
+<person>
+    <id>2</id>
+    <name xsi:nil="true"/>
+    <relativeOf>1</relativeOf>
+    <relationType>2</relationType>
+    <position xsi:nil="true"/>
+    <realties>
+      <realty>
+        <realtyType>2</realtyType>
+        <objectType>7</objectType>
+        <ownershipType xsi:nil="true"/>
+        <ownershipPart xsi:nil="true"/>
+        <square>77.8</square>
+        <country>6</country>
+      </realty>
+    </realties>
+    <transports xsi:nil="true"/>
+    <income>1910677.17</income>
+    <incomeComment xsi:nil="true"/>
+    <incomeSource xsi:nil="true"/>
+</person>
+
+Описания объектов недвижимости
+
+индивидуальная собственность
+<realty>
+        <realtyType>1</realtyType>
+        <objectType>7</objectType>
+        <ownershipType>1</ownershipType>
+        <ownershipPart xsi:nil="true" />
+        <square>43</square>
+        <country>6</country>
+</realty>
+
+совместная собственность
+<realty>
+        <realtyType>1</realtyType>
+        <objectType>7</objectType>
+        <ownershipType>2</ownershipType>
+        <ownershipPart xsi:nil="true" />
+        <square>81</square>
+        <country>6</country>
+</realty>
+
+долевая собственность
+<realty>
+        <realtyType>1</realtyType>
+        <objectType>7</objectType>
+        <ownershipType>3</ownershipType>
+        <ownershipPart>0.5</ownershipPart>
+        <square>46</square>
+        <country>6</country>
+</realty>
+
+для типа пользования «в пользовании»
+<realty>
+        <realtyType>2</realtyType>
+        <objectType>7</objectType>
+        <square>57</square>
+        <country>6</country>
+</realty>
+
+Транспортные средства
+<transports>
+      <transport>
+        <transportName>а/м легковой МАЗДА ВТ-50</transportName>
+      </transport>
+      <transport>
+        <transportName>Лодка моторная YAMARAN A 300</transportName>
+      </transport>
+      <transport>
+        <transportName>Мотор лодочный TOHATSU 6</transportName>
+      </transport>
+</transports>
+
+Сведения о доходах
+<income>2784593.22</income>
+<incomeComment xsi:nil="true" />
+<incomeSource xsi:nil="true" />
+
+
+<income>10940290.00 (в том числе единовременная субсидия на приобретение жилого помещения в размере 8369483.00 руб.)</income>
+<incomeComment xsi:nil="true" />
+<incomeSource xsi:nil="true" />
+
+Полный вид записи о чиновнике
+<person>
+    <id>1</id>
+    <name>Третьяк Наталья Владимировна</name>
+    <relativeOf xsi:nil="true" />
+    <relationType xsi:nil="true" />
+    <position>Первый заместитель Министра</position>
+    <realties>
+      <realty>
+        <realtyType>1</realtyType>
+        <objectType>7</objectType>
+        <ownershipType>3</ownershipType>
+        <ownershipPart>0.5</ownershipPart>
+        <square>46</square>
+        <country>6</country>
+      </realty>
+      <realty>
+        <realtyType>2</realtyType>
+        <objectType>7</objectType>
+        <square>57</square>
+        <country>6</country>
+      </realty>
+      <realty>
+        <realtyType>1</realtyType>
+        <objectType>7</objectType>
+        <ownershipType>1</ownershipType>
+        <ownershipPart xsi:nil="true" />
+        <square>43</square>
+        <country>6</country>
+      </realty>
+      <realty>
+        <realtyType>2</realtyType>
+        <objectType>17</objectType>
+        <square>13.1</square>
+        <country>6</country>
+      </realty>
+      <realty>
+        <realtyType>1</realtyType>
+        <objectType>7</objectType>
+        <ownershipType>1</ownershipType>
+        <ownershipPart xsi:nil="true" />
+        <square>122.5</square>
+        <country>6</country>
+      </realty>
+      <realty>
+        <realtyType>1</realtyType>
+        <objectType>7</objectType>
+        <ownershipType>1</ownershipType>
+        <ownershipPart xsi:nil="true" />
+        <square>111.1</square>
+        <country>6</country>
+      </realty>
+    </realties>
+    <transports>
+      <transport>
+        <transportName>а/м легковой АУДИ Q3</transportName>
+      </transport>
+    </transports>
+    <income>4398271.19</income>
+    <incomeComment xsi:nil="true" />
+    <incomeSource xsi:nil="true" />
+  </person>
+  <person>
+    <id>2</id>
+    <name xsi:nil="true" />
+    <relativeOf>1</relativeOf>
+    <relationType>3</relationType>
+    <position xsi:nil="true" />
+    <realties>
+      <realty>
+        <realtyType>2</realtyType>
+        <objectType>7</objectType>
+        <square>57</square>
+        <country>6</country>
+      </realty>
+      <realty>
+        <realtyType>2</realtyType>
+        <objectType>7</objectType>
+        <square>43</square>
+        <country>6</country>
+      </realty>
+    </realties>
+    <transports xsi:nil="true" />
+    <income>900000.00</income>
+    <incomeComment xsi:nil="true" />
+    <incomeSource xsi:nil="true" />
+  </person>
+  
+  Полные словари
+  relationType
+0.  не определено
+1.  супруг
+2.  супруга
+3.  несовершеннолетний ребенок
+
+objectType
+0.  не определено
+1.  садовый участок
+2.  нежилой дом
+3.  недостроенный дом
+4.  машино-место
+5.  комнаты // честно не помню, зачем оно пригодилось в таком виде, но в файле ФСИН что-то такое было
+6.  комната
+7.  квартира
+8.  иное недвижимое имущество
+9.  земельный участок
+10. жилой дом
+11. жилое строение
+12. жилое помещение
+13. дом
+14. дачный дом
+15. дачное строение
+16. дача
+17. гараж
+
+ownershipType
+0.  не определено
+1.  индивидуальная
+2.  общая совместная
+3.  общая долевая
+
+country
+0.  не определено  
+1.  Беларусь  
+2.  Грузия  
+3.  Казахстан  
+4.  Литва  
+5.  Португалия  
+6.  Россия  
+7.  США  
+8.  Украина  
+  
+
+
